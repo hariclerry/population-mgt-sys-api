@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 // create schema
 const populationSchema = Schema({
-  location: {
+  locationName: {
     type: String,
     required: true,
   },
@@ -12,14 +12,14 @@ const populationSchema = Schema({
     type: Number,
     required: true,
   },
-  numberOfmale: {
+  numberOfMale: {
     type: Number,
     required: true,
   },
-  total: {
-    type: Number,
-    required: true,
-  },
+  // total: {
+  //   type: Number,
+  //   required: true,
+  // },
   created: { 
     type: Date,
     default: Date.now
