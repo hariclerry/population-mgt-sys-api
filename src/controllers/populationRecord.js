@@ -6,6 +6,8 @@ const { validate } = require('../utilis/validator');
 router.get('/', async (req, res) => {
   try {
     const populationRecord = await PopulationRecord.find().sort('locationName');
+    // const xyz =  await PopulationRecord.find().select({numberOfFemale:1}).count()
+    // console.log('%%%%%%%%%%',xyz)
     res.send(populationRecord);
   } catch (error) {
     res.status(500).send(error.message);
@@ -14,17 +16,22 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
+    const { locationName, numberOfFemale, numberOfMale } = req.body;
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
+    
+    const locations = await PopulationRecord.findOne({locationName})
+    if (locations) return res.status(409).json({ message: "This location already exists" })
 
     let populationRecord = new PopulationRecord({
-      locationName: req.body.locationName,
-      numberOfFemale: req.body.numberOfFemale,
-      numberOfMale: req.body.numberOfMale
+      locationName, numberOfFemale, numberOfMale
     });
-    populationRecord = await populationRecord.save();
+    populationRecord.total = parseInt(numberOfFemale, 10) + parseInt(numberOfMale, 10)
 
-    res.status(201).send(populationRecord);
+    // const savedLocation = await newLocation.save()
+    const savedPopulation = await populationRecord.save();
+
+    res.status(201).send(savedPopulation);
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -74,15 +81,12 @@ router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const populationRecord = await PopulationRecord.findById({ _id: id });
-    // if (!populationRecord) {
-    //   return console.log('%%%%%%%%%%%%%%%%%%%%%%');
-    // }
 
     if (!populationRecord) return res.status(404).send('Location with the given ID was not found.');
 
     res.send(populationRecord);
   } catch (error) {
-    return res.status(500).send(error.message);
+    res.status(500).send(error.message);
   }
 });
 
