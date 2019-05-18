@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
+// const { PopulationRecord } = require('../models/population');
 
 const Schema = mongoose.Schema;
 
 // create schema
-const populationSchema = Schema({
+const subLocationSchema = Schema({
   locationName: {
     type: String,
     required: true,
@@ -16,10 +17,14 @@ const populationSchema = Schema({
     type: Number,
     required: true,
   },
-  total: {
+  subTotal: {
     type: Number,
     required: true,
   },
+  parentLocation: {
+    type: Schema.Types.ObjectId,
+    ref: 'MainLocation'
+  } ,
   created: { 
     type: Date,
     default: Date.now
@@ -27,6 +32,9 @@ const populationSchema = Schema({
 });
 
 //create model using schema
-const PopulationRecord = mongoose.model('Population', populationSchema)
+const SubLocation = mongoose.model('SubLocation', subLocationSchema)
 
-module.exports = PopulationRecord;
+// module.exports = mongoose.model('SubLocation', subLocationSchema)
+
+module.exports = subLocationSchema;
+module.exports = SubLocation;
