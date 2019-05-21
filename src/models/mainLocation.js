@@ -30,9 +30,4 @@ const mainLocationSchema = Schema({
 }
 });
 
-//create model using schema
-// const PopulationRecord = mongoose.model('Population', populationSchema)
 module.exports = mongoose.model('MainLocation', mainLocationSchema)
-
-// module.exports = PopulationRecord;
-// module.exports = populationSchema;

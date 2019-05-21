@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
-const populationRecord = require('./controllers/mainLocation');
+const routes = require('./routes/routes');
 const subLocation = require('./controllers/subLocation');
 
 // connect to mongoDB using mongoose
@@ -17,12 +17,16 @@ app.use(bodyParser.raw());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-
+routes(app);
 app.get('/', (req, res) => {
-  res.send('Hello user, welcome!'); 
+  res.send('Hello user, welcome to population management system'); 
 });
-app.use('/api/location', populationRecord);
-app.use('/api/location/sub', subLocation);
+// app.use('/api/lo);
+// app.use('/api/location/sub', subLocation);
+
+app.all('*', (req, res) => {
+  res.status(200).send('Oooooops wrong endpoint!'); 
+});
 
 const port = process.env.PORT || 3000
 
