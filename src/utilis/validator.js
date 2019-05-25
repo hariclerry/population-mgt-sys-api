@@ -2,7 +2,7 @@ const Joi = require('joi');
 
 function validateRecord(record) {
   const schema = {
-    locationName: Joi.string().min(1).max(50).required(),
+    locationName: Joi.string().min(3).max(50).required(),
     numberOfFemale: Joi.number().integer().required(),
     numberOfMale: Joi.number().integer().required(),
   };

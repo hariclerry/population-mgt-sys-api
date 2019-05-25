@@ -3,7 +3,6 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 const routes = require('./routes/routes');
-const subLocation = require('./controllers/subLocation');
 
 // connect to mongoDB using mongoose
 mongoose.connect('mongodb://localhost/population')
@@ -30,4 +29,6 @@ app.all('*', (req, res) => {
 
 const port = process.env.PORT || 3000
 
-app.listen(port, () => console.log(`listening on port ${port}...`));
+const server = app.listen(port, () => console.log(`listening on port ${port}...`));
+
+module.exports = server;

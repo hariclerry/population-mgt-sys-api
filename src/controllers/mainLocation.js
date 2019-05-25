@@ -1,7 +1,5 @@
-const express = require('express');
-const router = express.Router();
+const mongoose = require('mongoose');
 const MainLocation = require('../models/mainLocation');
-const SubLocation = require('../models/subLocations');
 const { validate } = require('../utilis/validator');
 
 module.exports = {
@@ -46,6 +44,11 @@ module.exports = {
       const { error } = validate(req.body);
       if (error) return res.status(400).send(error.details[0].message);
 
+      if (!mongoose.Types.ObjectId.isValid(locationId)){
+        return res.status(400)
+          .send({message: `Invalid location ID`});
+      }
+
       const populationRecord = await MainLocation.findByIdAndUpdate(
         req.params.locationId,
         {
@@ -75,6 +78,10 @@ module.exports = {
   async deleteLocation(req, res) {
     const { locationId } = req.params
     try {
+      if (!mongoose.Types.ObjectId.isValid(locationId)){
+        return res.status(400)
+          .send({message: `Invalid location ID`});
+      }
       const populationRecord = await MainLocation.findByIdAndRemove(locationId);
 
       if (!populationRecord)
@@ -82,7 +89,7 @@ module.exports = {
           .status(404)
           .send({message: `Location with ID ${locationId} was not found`});
 
-      res.send({message: `Location with ID ${locationId} deleted successfully`});
+      res.status(200).send({message: `Location with ID ${locationId} deleted successfully`});
     } catch (error) {
       res.status(500).send(error.message);
     }
@@ -91,6 +98,10 @@ module.exports = {
   async fetchLocation(req, res) {
     const { locationId } = req.params
     try {
+      if (!mongoose.Types.ObjectId.isValid(locationId)){
+        return res.status(400)
+          .send({message: `Invalid location ID`});
+      }
       const populationRecord = await MainLocation.findById(locationId);
 
       if (!populationRecord.id) {
