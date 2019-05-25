@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/hariclerry/population-mgt-sys-api.svg?branch=master)](https://travis-ci.org/hariclerry/population-mgt-sys-api)
+[![Coverage Status](https://coveralls.io/repos/github/hariclerry/population-mgt-sys-api/badge.svg?branch=master)](https://coveralls.io/github/hariclerry/population-mgt-sys-api?branch=master)
 
 # Population Management System
 
