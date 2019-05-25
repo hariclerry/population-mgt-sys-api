@@ -1,7 +1,14 @@
 language: node_js
-node_js:
-  - 10.15.3
+
+node_js: 10.15.3
 services: mongodb
+
+cache: npm
+
+before_script:
+  - sleep 15
+
 script: npm run test -- --coverage
-after_success: 
-- coveralls < coverage/lcov.info
+
+after_success:
+  - coveralls < coverage/lcov.info
