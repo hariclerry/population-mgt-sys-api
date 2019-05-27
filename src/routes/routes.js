@@ -6,7 +6,7 @@ const {
   updateLocation,
   fetchAllLocations,
   fetchLocation,
-  deleteLocation,
+  deleteLocation
 } = location;
 
 const {
@@ -14,24 +14,28 @@ const {
   updateSubLocation,
   fetchAllSubLocations,
   fetchSubLocation,
-  deleteSubLocation,
+  deleteSubLocation
 } = subLocation;
 
 module.exports = app => {
   //mainLocation routes
-  app.route('/api/v1/location')
+  app
+    .route('/api/v1/location')
     .post(createLocation)
     .get(fetchAllLocations);
-  app.route('/api/v1/location/:locationId')
+  app
+    .route('/api/v1/location/:locationId')
     .put(updateLocation)
     .delete(deleteLocation)
     .get(fetchLocation);
 
   //subLocation routes
-  app.route('/api/v1/location/:locationId/sub')
+  app
+    .route('/api/v1/location/:locationId/sub')
     .post(createSubLocation)
     .get(fetchAllSubLocations);
-  app.route('/api/v1/location/:locationId/sub/:id')
+  app
+    .route('/api/v1/location/:locationId/sub/:id')
     .put(updateSubLocation)
     .delete(deleteSubLocation)
     .get(fetchSubLocation);
