@@ -14,8 +14,77 @@ describe('/api/locations', () => {
     server.close();
     await MainLocation.remove({});
     await SubLocation.remove({});
+    await User.remove({});
   });
 
+  //User test
+  describe('POST /', () => {
+    let user;
+    const exec = async () => {
+      return await request(server)
+        .post('/api/v1/user')
+        .send({ user })
+    };
+
+    beforeEach(() => {
+      user = {
+        name: 'Jane Doe',
+        email: 'janedoe@gmail.com',
+        password: 'jane12345'
+      };
+    });
+
+    it('should return 400 if character validation fails for user', async () => {
+      locations = {
+        name: 'Doe',
+        email: 'jamail.com',
+        password: 12345
+      };
+
+      const res = await exec();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 201 if a user has been created', async () => {
+      const res = await request(server)
+        .post('/api/v1/user')
+        .send({
+          name: 'Jane Doe',
+          email: 'janedoe@gmail.com',
+          password: 'jane12345'
+        });
+      expect(res.status).toBe(201);
+    });
+
+    it('should return 400 if a user password or name is invalid', async () => {
+      const res = await request(server)
+        .post('/api/v1/user/login')
+        .send({
+          email: 'janedoe@gmail.com',
+          password: 'jane12345'
+        });
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 400 if a user password is invalid', async () => {
+      const user = new User({
+        name: 'Jane Doe',
+        email: 'janedoe@gmail.com',
+        password: 'jane12345'
+      });
+      await user.save();
+      const res = await request(server)
+        .post('/api/v1/user/login')
+        .send({
+          email: 'janedoe@gmail.com',
+          password: 'jane12345'
+        });
+      expect(res.status).toBe(400);
+    });
+  });
+
+  // Main location test
   describe('GET /', () => {
     let token; 
     beforeEach(() => {
@@ -205,8 +274,6 @@ describe('/api/locations', () => {
   });
 
   describe('DELETE /:locationId', () => {
-    // let token;
-    // let genre;
     let locationId;
     let token;
 

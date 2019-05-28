@@ -1,6 +1,6 @@
 // const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const User = require('../models/user');
+const { User } = require('../models/user');
 const { validateUser, validateLogin } = require('../utilis/validator');
 
 module.exports = {
@@ -42,7 +42,7 @@ module.exports = {
         return res.status(400).send({message: 'Invalid password.'});
 
       const token = user.generateAuthToken();
-      res.send({token, message: "Login successful."});
+      res.status(200).send({token, message: "Login successful."});
     } catch (error) {
       res.status(500).send({ Error: error.message });
     }
