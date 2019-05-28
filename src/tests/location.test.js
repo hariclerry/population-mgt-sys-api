@@ -251,7 +251,7 @@ describe('/api/locations', () => {
   // sublocation test
 
   describe('GET /', () => {
-    it('should return all locations', async () => {
+    it('should return all sub locations', async () => {
       const locations = [
         { locationName: 'Gulu' },
         { numberOfFemale: 10 },

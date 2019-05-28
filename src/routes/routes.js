@@ -1,5 +1,6 @@
 const location = require('../controllers/mainLocation');
 const subLocation = require('../controllers/subLocation');
+const users = require('../controllers/users');
 
 const {
   createLocation,
@@ -16,6 +17,11 @@ const {
   fetchSubLocation,
   deleteSubLocation
 } = subLocation;
+
+const {
+  createUser,
+  loginUser
+} = users;
 
 module.exports = app => {
   //mainLocation routes
@@ -39,4 +45,12 @@ module.exports = app => {
     .put(updateSubLocation)
     .delete(deleteSubLocation)
     .get(fetchSubLocation);
+
+   //user routes
+   app
+   .route('/api/v1/user')
+   .post(createUser)
+   app
+   .route('/api/v1/user/login')
+   .post(loginUser)
 };
