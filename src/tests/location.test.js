@@ -12,9 +12,9 @@ describe('/api/locations', () => {
   });
   afterEach(async () => {
     server.close();
+    await User.remove({});
     await MainLocation.remove({});
     await SubLocation.remove({});
-    await User.remove({});
   });
 
   //User test
@@ -23,7 +23,7 @@ describe('/api/locations', () => {
     const exec = async () => {
       return await request(server)
         .post('/api/v1/user')
-        .send({ user })
+        .send({ user });
     };
 
     beforeEach(() => {
@@ -86,10 +86,10 @@ describe('/api/locations', () => {
 
   // Main location test
   describe('GET /', () => {
-    let token; 
+    let token;
     beforeEach(() => {
-      token = new User().generateAuthToken();  
-      });
+      token = new User().generateAuthToken();
+    });
 
     it('should return all locations', async () => {
       const locations = [
@@ -102,7 +102,9 @@ describe('/api/locations', () => {
 
       await MainLocation.collection.insertMany(locations);
 
-      const res = await request(server).get('/api/v1/location').set('x-auth-token', token);
+      const res = await request(server)
+        .get('/api/v1/location')
+        .set('x-auth-token', token);
 
       expect(res.status).toBe(200);
       expect(res.body.length).toBe(5);
@@ -127,14 +129,18 @@ describe('/api/locations', () => {
       const location = new MainLocation(locations);
       await location.save();
 
-      const res = await request(server).get('/api/v1/location/' + location._id).set('x-auth-token', token);
+      const res = await request(server)
+        .get('/api/v1/location/' + location._id)
+        .set('x-auth-token', token);
 
       expect(res.status).toBe(200);
     });
 
     it('should return 404 if invalid id is passed', async () => {
       const token = new User().generateAuthToken();
-      const res = await request(server).get('/api/v1/location/1').set('x-auth-token', token);
+      const res = await request(server)
+        .get('/api/v1/location/1')
+        .set('x-auth-token', token);
 
       expect(res.status).toBe(400);
     });
@@ -142,7 +148,9 @@ describe('/api/locations', () => {
     it('should return 500 if no location with the given id exists', async () => {
       const token = new User().generateAuthToken();
       const id = mongoose.Types.ObjectId();
-      const res = await request(server).get('/api/v1/location/' + id).set('x-auth-token', token);
+      const res = await request(server)
+        .get('/api/v1/location/' + id)
+        .set('x-auth-token', token);
 
       expect(res.status).toBe(500);
     });
@@ -154,11 +162,12 @@ describe('/api/locations', () => {
     const exec = async () => {
       return await request(server)
         .post('/api/v1/location')
-        .send({ locations }).set('x-auth-token', token);
+        .send({ locations })
+        .set('x-auth-token', token);
     };
 
     beforeEach(() => {
-      token = new User().generateAuthToken(); 
+      token = new User().generateAuthToken();
       locations = {
         locationName: 'Gulu',
         numberOfFemale: 10,
@@ -183,7 +192,8 @@ describe('/api/locations', () => {
     it('should return 201 if a location has been created', async () => {
       locations.total = locations.numberOfFemale + locations.numberOfMale;
       const res = await request(server)
-        .post('/api/v1/location').set('x-auth-token', token)
+        .post('/api/v1/location')
+        .set('x-auth-token', token)
         .send({
           locationName: 'New location',
           numberOfFemale: 50,
@@ -222,7 +232,8 @@ describe('/api/locations', () => {
 
     it('should return 400 if location is has invalid characters or input', async () => {
       const res = await request(server)
-        .put('/api/v1/location/' + locationId).set('x-auth-token', token)
+        .put('/api/v1/location/' + locationId)
+        .set('x-auth-token', token)
         .send({
           locationName: 'Up',
           numberOfFemale: 50.3,
@@ -236,7 +247,8 @@ describe('/api/locations', () => {
       locationId = mongoose.Types.ObjectId();
 
       const res = await request(server)
-        .put('/api/v1/location/' + locationId).set('x-auth-token', token)
+        .put('/api/v1/location/' + locationId)
+        .set('x-auth-token', token)
         .send({
           locationName: 'Update location',
           numberOfFemale: 50,
@@ -250,7 +262,8 @@ describe('/api/locations', () => {
       locationId = 3;
 
       const res = await request(server)
-        .put('/api/v1/location/' + locationId).set('x-auth-token', token)
+        .put('/api/v1/location/' + locationId)
+        .set('x-auth-token', token)
         .send({
           locationName: 'Update location',
           numberOfFemale: 50,
@@ -262,7 +275,8 @@ describe('/api/locations', () => {
 
     it('should update location', async () => {
       const res = await request(server)
-        .put('/api/v1/location/' + locationId).set('x-auth-token', token)
+        .put('/api/v1/location/' + locationId)
+        .set('x-auth-token', token)
         .send({
           locationName: 'Update location',
           numberOfFemale: 100,
@@ -303,7 +317,8 @@ describe('/api/locations', () => {
       locationId = 3;
 
       const res = await request(server)
-        .delete('/api/v1/location/' + locationId).set('x-auth-token', token)
+        .delete('/api/v1/location/' + locationId)
+        .set('x-auth-token', token)
         .send();
 
       expect(res.status).toBe(400);
@@ -313,7 +328,8 @@ describe('/api/locations', () => {
       locationId = mongoose.Types.ObjectId();
 
       const res = await request(server)
-        .delete('/api/v1/location/' + locationId).set('x-auth-token', token)
+        .delete('/api/v1/location/' + locationId)
+        .set('x-auth-token', token)
         .send();
 
       expect(res.status).toBe(404);
@@ -321,7 +337,8 @@ describe('/api/locations', () => {
 
     it('should delete the location if input is valid', async () => {
       await request(server)
-        .delete('/api/v1/location/' + locationId).set('x-auth-token', token)
+        .delete('/api/v1/location/' + locationId)
+        .set('x-auth-token', token)
         .send();
 
       const locationInDb = await MainLocation.findById(locationId);
@@ -344,7 +361,9 @@ describe('/api/locations', () => {
 
       await SubLocation.collection.insertMany(locations);
 
-      const res = await request(server).get('/api/v1/location/:locationId/sub').set('x-auth-token', token);
+      const res = await request(server)
+        .get('/api/v1/location/:locationId/sub')
+        .set('x-auth-token', token);
 
       expect(res.status).toBe(200);
       expect(res.body.length).toBe(4);
@@ -368,14 +387,18 @@ describe('/api/locations', () => {
       const location = new SubLocation(locations);
       await location.save();
 
-      const res = await request(server).get('/api/v1/location/:locationId/sub/' + location._id).set('x-auth-token', token);
+      const res = await request(server)
+        .get('/api/v1/location/:locationId/sub/' + location._id)
+        .set('x-auth-token', token);
 
       expect(res.status).toBe(200);
     });
 
     it('should return 404 if invalid id is passed', async () => {
       const token = new User().generateAuthToken();
-      const res = await request(server).get('/api/v1/location/:locationId/sub/1').set('x-auth-token', token);
+      const res = await request(server)
+        .get('/api/v1/location/:locationId/sub/1')
+        .set('x-auth-token', token);
 
       expect(res.status).toBe(400);
     });
@@ -383,7 +406,9 @@ describe('/api/locations', () => {
     it('should return 404 if no location with the given id exists', async () => {
       const token = new User().generateAuthToken();
       const id = mongoose.Types.ObjectId();
-      const res = await request(server).get('/api/v1/location/:locationId/sub/' + id).set('x-auth-token', token);
+      const res = await request(server)
+        .get('/api/v1/location/:locationId/sub/' + id)
+        .set('x-auth-token', token);
 
       expect(res.status).toBe(404);
     });
@@ -391,10 +416,11 @@ describe('/api/locations', () => {
 
   describe('POST /', () => {
     let locations;
-    let token
+    let token;
     const exec = async () => {
       return await request(server)
-        .post('/api/v1/location/:locationId/sub').set('x-auth-token', token)
+        .post('/api/v1/location/:locationId/sub')
+        .set('x-auth-token', token)
         .send({ locations });
     };
 
@@ -449,7 +475,8 @@ describe('/api/locations', () => {
 
     it('should return 400 if location is has invalid characters or input', async () => {
       const res = await request(server)
-        .put('/api/v1/location/:locationId/sub/' + locationId).set('x-auth-token', token)
+        .put('/api/v1/location/:locationId/sub/' + locationId)
+        .set('x-auth-token', token)
         .send({
           locationName: 'Up',
           numberOfFemale: 50.3,
@@ -463,7 +490,8 @@ describe('/api/locations', () => {
       locationId = mongoose.Types.ObjectId();
 
       const res = await request(server)
-        .put('/api/v1/location/:locationId/sub/' + locationId).set('x-auth-token', token)
+        .put('/api/v1/location/:locationId/sub/' + locationId)
+        .set('x-auth-token', token)
         .send({
           locationName: 'Update location',
           numberOfFemale: 50,
@@ -477,7 +505,8 @@ describe('/api/locations', () => {
       locationId = 3;
 
       const res = await request(server)
-        .put('/api/v1/location/:locationId/sub/' + locationId).set('x-auth-token', token)
+        .put('/api/v1/location/:locationId/sub/' + locationId)
+        .set('x-auth-token', token)
         .send({
           locationName: 'Update location',
           numberOfFemale: 50,
@@ -489,7 +518,8 @@ describe('/api/locations', () => {
 
     it('should update location', async () => {
       const res = await request(server)
-        .put('/api/v1/location/:locationId/sub/' + locationId).set('x-auth-token', token)
+        .put('/api/v1/location/:locationId/sub/' + locationId)
+        .set('x-auth-token', token)
         .send({
           locationName: 'Update location',
           numberOfFemale: 100,
@@ -508,7 +538,8 @@ describe('/api/locations', () => {
 
     const exec = async () => {
       return await request(server)
-        .delete('/api/genres/' + locationId).set('x-auth-token', token)
+        .delete('/api/genres/' + locationId)
+        .set('x-auth-token', token)
         .set('x-auth-token', token)
         .send();
     };
@@ -532,7 +563,8 @@ describe('/api/locations', () => {
       locationId = 3;
 
       const res = await request(server)
-        .delete('/api/v1/location/:locationId/sub/' + locationId).set('x-auth-token', token)
+        .delete('/api/v1/location/:locationId/sub/' + locationId)
+        .set('x-auth-token', token)
         .send();
 
       expect(res.status).toBe(400);
@@ -542,7 +574,8 @@ describe('/api/locations', () => {
       locationId = mongoose.Types.ObjectId();
 
       const res = await request(server)
-        .delete('/api/v1/location/:locationId/sub/' + locationId).set('x-auth-token', token)
+        .delete('/api/v1/location/:locationId/sub/' + locationId)
+        .set('x-auth-token', token)
         .send();
 
       expect(res.status).toBe(404);
@@ -550,7 +583,8 @@ describe('/api/locations', () => {
 
     it('should delete the location if input is valid', async () => {
       await request(server)
-        .delete('/api/v1/location/:locationId/sub/' + locationId).set('x-auth-token', token)
+        .delete('/api/v1/location/:locationId/sub/' + locationId)
+        .set('x-auth-token', token)
         .send();
 
       const locationInDb = await SubLocation.findById(locationId);
