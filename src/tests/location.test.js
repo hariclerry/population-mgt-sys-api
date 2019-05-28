@@ -11,10 +11,10 @@ describe('/api/locations', () => {
     server = require('../index');
   });
   afterEach(async () => {
-    server.close();
     await User.remove({});
     await MainLocation.remove({});
     await SubLocation.remove({});
+    server.close();
   });
 
   //User test
