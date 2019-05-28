@@ -1,6 +1,7 @@
 const request = require('supertest');
 const MainLocation = require('../models/mainLocation');
 const SubLocation = require('../models/subLocations');
+const { User } = require('../models/user');
 const mongoose = require('mongoose');
 
 let server;
@@ -16,6 +17,11 @@ describe('/api/locations', () => {
   });
 
   describe('GET /', () => {
+    let token; 
+    beforeEach(() => {
+      token = new User().generateAuthToken();  
+      });
+
     it('should return all locations', async () => {
       const locations = [
         { locationName: 'Gulu' },
@@ -27,7 +33,7 @@ describe('/api/locations', () => {
 
       await MainLocation.collection.insertMany(locations);
 
-      const res = await request(server).get('/api/v1/location');
+      const res = await request(server).get('/api/v1/location').set('x-auth-token', token);
 
       expect(res.status).toBe(200);
       expect(res.body.length).toBe(5);
@@ -40,6 +46,7 @@ describe('/api/locations', () => {
 
   describe('GET /:id', () => {
     it('should return a location if valid id is passed', async () => {
+      const token = new User().generateAuthToken();
       const locations = {
         locationName: 'Gulu',
         numberOfFemale: 10,
@@ -51,20 +58,22 @@ describe('/api/locations', () => {
       const location = new MainLocation(locations);
       await location.save();
 
-      const res = await request(server).get('/api/v1/location/' + location._id);
+      const res = await request(server).get('/api/v1/location/' + location._id).set('x-auth-token', token);
 
       expect(res.status).toBe(200);
     });
 
     it('should return 404 if invalid id is passed', async () => {
-      const res = await request(server).get('/api/v1/location/1');
+      const token = new User().generateAuthToken();
+      const res = await request(server).get('/api/v1/location/1').set('x-auth-token', token);
 
       expect(res.status).toBe(400);
     });
 
     it('should return 500 if no location with the given id exists', async () => {
+      const token = new User().generateAuthToken();
       const id = mongoose.Types.ObjectId();
-      const res = await request(server).get('/api/v1/location/' + id);
+      const res = await request(server).get('/api/v1/location/' + id).set('x-auth-token', token);
 
       expect(res.status).toBe(500);
     });
@@ -72,13 +81,15 @@ describe('/api/locations', () => {
 
   describe('POST /', () => {
     let locations;
+    let token;
     const exec = async () => {
       return await request(server)
         .post('/api/v1/location')
-        .send({ locations });
+        .send({ locations }).set('x-auth-token', token);
     };
 
     beforeEach(() => {
+      token = new User().generateAuthToken(); 
       locations = {
         locationName: 'Gulu',
         numberOfFemale: 10,
@@ -103,7 +114,7 @@ describe('/api/locations', () => {
     it('should return 201 if a location has been created', async () => {
       locations.total = locations.numberOfFemale + locations.numberOfMale;
       const res = await request(server)
-        .post('/api/v1/location')
+        .post('/api/v1/location').set('x-auth-token', token)
         .send({
           locationName: 'New location',
           numberOfFemale: 50,
@@ -117,10 +128,12 @@ describe('/api/locations', () => {
   describe('PUT /:id', () => {
     let savedLocation;
     let locationId;
+    let token;
 
     beforeEach(async () => {
       // Before each test we need to create a genre and
       // put it in the database.
+      token = new User().generateAuthToken();
       savedLocation = new MainLocation({
         locationName: 'Updated location',
         numberOfFemale: 50,
@@ -140,7 +153,7 @@ describe('/api/locations', () => {
 
     it('should return 400 if location is has invalid characters or input', async () => {
       const res = await request(server)
-        .put('/api/v1/location/' + locationId)
+        .put('/api/v1/location/' + locationId).set('x-auth-token', token)
         .send({
           locationName: 'Up',
           numberOfFemale: 50.3,
@@ -154,7 +167,7 @@ describe('/api/locations', () => {
       locationId = mongoose.Types.ObjectId();
 
       const res = await request(server)
-        .put('/api/v1/location/' + locationId)
+        .put('/api/v1/location/' + locationId).set('x-auth-token', token)
         .send({
           locationName: 'Update location',
           numberOfFemale: 50,
@@ -168,7 +181,7 @@ describe('/api/locations', () => {
       locationId = 3;
 
       const res = await request(server)
-        .put('/api/v1/location/' + locationId)
+        .put('/api/v1/location/' + locationId).set('x-auth-token', token)
         .send({
           locationName: 'Update location',
           numberOfFemale: 50,
@@ -180,7 +193,7 @@ describe('/api/locations', () => {
 
     it('should update location', async () => {
       const res = await request(server)
-        .put('/api/v1/location/' + locationId)
+        .put('/api/v1/location/' + locationId).set('x-auth-token', token)
         .send({
           locationName: 'Update location',
           numberOfFemale: 100,
@@ -195,6 +208,7 @@ describe('/api/locations', () => {
     // let token;
     // let genre;
     let locationId;
+    let token;
 
     const exec = async () => {
       return await request(server)
@@ -206,6 +220,7 @@ describe('/api/locations', () => {
     beforeEach(async () => {
       // Before each test we need to create a genre and
       // put it in the database.
+      token = new User().generateAuthToken();
       savedLocation = new MainLocation({
         locationName: 'Updated location',
         numberOfFemale: 50,
@@ -221,7 +236,7 @@ describe('/api/locations', () => {
       locationId = 3;
 
       const res = await request(server)
-        .delete('/api/v1/location/' + locationId)
+        .delete('/api/v1/location/' + locationId).set('x-auth-token', token)
         .send();
 
       expect(res.status).toBe(400);
@@ -231,7 +246,7 @@ describe('/api/locations', () => {
       locationId = mongoose.Types.ObjectId();
 
       const res = await request(server)
-        .delete('/api/v1/location/' + locationId)
+        .delete('/api/v1/location/' + locationId).set('x-auth-token', token)
         .send();
 
       expect(res.status).toBe(404);
@@ -239,7 +254,7 @@ describe('/api/locations', () => {
 
     it('should delete the location if input is valid', async () => {
       await request(server)
-        .delete('/api/v1/location/' + locationId)
+        .delete('/api/v1/location/' + locationId).set('x-auth-token', token)
         .send();
 
       const locationInDb = await MainLocation.findById(locationId);
@@ -252,6 +267,7 @@ describe('/api/locations', () => {
 
   describe('GET /', () => {
     it('should return all sub locations', async () => {
+      const token = new User().generateAuthToken();
       const locations = [
         { locationName: 'Gulu' },
         { numberOfFemale: 10 },
@@ -261,7 +277,7 @@ describe('/api/locations', () => {
 
       await SubLocation.collection.insertMany(locations);
 
-      const res = await request(server).get('/api/v1/location/:locationId/sub');
+      const res = await request(server).get('/api/v1/location/:locationId/sub').set('x-auth-token', token);
 
       expect(res.status).toBe(200);
       expect(res.body.length).toBe(4);
@@ -274,6 +290,7 @@ describe('/api/locations', () => {
 
   describe('GET /:id', () => {
     it('should return a location if valid id is passed', async () => {
+      const token = new User().generateAuthToken();
       const locations = {
         locationName: 'Gulu',
         numberOfFemale: 10,
@@ -284,20 +301,22 @@ describe('/api/locations', () => {
       const location = new SubLocation(locations);
       await location.save();
 
-      const res = await request(server).get('/api/v1/location/:locationId/sub/' + location._id);
+      const res = await request(server).get('/api/v1/location/:locationId/sub/' + location._id).set('x-auth-token', token);
 
       expect(res.status).toBe(200);
     });
 
     it('should return 404 if invalid id is passed', async () => {
-      const res = await request(server).get('/api/v1/location/:locationId/sub/1');
+      const token = new User().generateAuthToken();
+      const res = await request(server).get('/api/v1/location/:locationId/sub/1').set('x-auth-token', token);
 
       expect(res.status).toBe(400);
     });
 
     it('should return 404 if no location with the given id exists', async () => {
+      const token = new User().generateAuthToken();
       const id = mongoose.Types.ObjectId();
-      const res = await request(server).get('/api/v1/location/:locationId/sub/' + id);
+      const res = await request(server).get('/api/v1/location/:locationId/sub/' + id).set('x-auth-token', token);
 
       expect(res.status).toBe(404);
     });
@@ -305,13 +324,15 @@ describe('/api/locations', () => {
 
   describe('POST /', () => {
     let locations;
+    let token
     const exec = async () => {
       return await request(server)
-        .post('/api/v1/location/:locationId/sub')
+        .post('/api/v1/location/:locationId/sub').set('x-auth-token', token)
         .send({ locations });
     };
 
     beforeEach(() => {
+      token = new User().generateAuthToken();
       locations = {
         locationName: 'Gulu',
         numberOfFemale: 10,
@@ -336,10 +357,12 @@ describe('/api/locations', () => {
   describe('PUT /:id', () => {
     let savedLocation;
     let locationId;
+    let token;
 
     beforeEach(async () => {
       // Before each test we need to create a genre and
       // put it in the database.
+      token = new User().generateAuthToken();
       savedLocation = new SubLocation({
         locationName: 'Updated location',
         numberOfFemale: 50,
@@ -359,7 +382,7 @@ describe('/api/locations', () => {
 
     it('should return 400 if location is has invalid characters or input', async () => {
       const res = await request(server)
-        .put('/api/v1/location/:locationId/sub/' + locationId)
+        .put('/api/v1/location/:locationId/sub/' + locationId).set('x-auth-token', token)
         .send({
           locationName: 'Up',
           numberOfFemale: 50.3,
@@ -373,7 +396,7 @@ describe('/api/locations', () => {
       locationId = mongoose.Types.ObjectId();
 
       const res = await request(server)
-        .put('/api/v1/location/:locationId/sub/' + locationId)
+        .put('/api/v1/location/:locationId/sub/' + locationId).set('x-auth-token', token)
         .send({
           locationName: 'Update location',
           numberOfFemale: 50,
@@ -387,7 +410,7 @@ describe('/api/locations', () => {
       locationId = 3;
 
       const res = await request(server)
-        .put('/api/v1/location/:locationId/sub/' + locationId)
+        .put('/api/v1/location/:locationId/sub/' + locationId).set('x-auth-token', token)
         .send({
           locationName: 'Update location',
           numberOfFemale: 50,
@@ -399,7 +422,7 @@ describe('/api/locations', () => {
 
     it('should update location', async () => {
       const res = await request(server)
-        .put('/api/v1/location/:locationId/sub/' + locationId)
+        .put('/api/v1/location/:locationId/sub/' + locationId).set('x-auth-token', token)
         .send({
           locationName: 'Update location',
           numberOfFemale: 100,
@@ -414,10 +437,11 @@ describe('/api/locations', () => {
     // let token;
     // let genre;
     let locationId;
+    let token;
 
     const exec = async () => {
       return await request(server)
-        .delete('/api/genres/' + locationId)
+        .delete('/api/genres/' + locationId).set('x-auth-token', token)
         .set('x-auth-token', token)
         .send();
     };
@@ -425,6 +449,7 @@ describe('/api/locations', () => {
     beforeEach(async () => {
       // Before each test we need to create a genre and
       // put it in the database.
+      token = new User().generateAuthToken();
       savedLocation = new SubLocation({
         locationName: 'Updated location',
         numberOfFemale: 50,
@@ -440,7 +465,7 @@ describe('/api/locations', () => {
       locationId = 3;
 
       const res = await request(server)
-        .delete('/api/v1/location/:locationId/sub/' + locationId)
+        .delete('/api/v1/location/:locationId/sub/' + locationId).set('x-auth-token', token)
         .send();
 
       expect(res.status).toBe(400);
@@ -450,7 +475,7 @@ describe('/api/locations', () => {
       locationId = mongoose.Types.ObjectId();
 
       const res = await request(server)
-        .delete('/api/v1/location/:locationId/sub/' + locationId)
+        .delete('/api/v1/location/:locationId/sub/' + locationId).set('x-auth-token', token)
         .send();
 
       expect(res.status).toBe(404);
@@ -458,7 +483,7 @@ describe('/api/locations', () => {
 
     it('should delete the location if input is valid', async () => {
       await request(server)
-        .delete('/api/v1/location/:locationId/sub/' + locationId)
+        .delete('/api/v1/location/:locationId/sub/' + locationId).set('x-auth-token', token)
         .send();
 
       const locationInDb = await SubLocation.findById(locationId);
