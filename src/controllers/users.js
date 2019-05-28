@@ -1,6 +1,8 @@
 // const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
+const config = require('config');
 const { validateUser, validateLogin } = require('../utilis/validator');
 
 module.exports = {
@@ -41,7 +43,8 @@ module.exports = {
       if (!validPassword)
         return res.status(400).send({message: 'Invalid password.'});
 
-      res.send(true);
+      const token = jwt.sign({_id: user._id}, config.get('jwtPrivateKey'));
+      res.send({token, message: "Login successful."});
     } catch (error) {
       res.status(500).send({ Error: error.message });
     }

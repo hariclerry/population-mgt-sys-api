@@ -1,13 +1,23 @@
 const express = require('express');
 const app = express();
+const config = require('config');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 const routes = require('./routes/routes');
 
-// connect to mongoDB using mongoose
-mongoose.connect('mongodb://localhost/population')
-.then(() => console.log('Connected to MongoDB....'))
-.catch((error) => console.log('Could not connected to MongoDB....', error));
+require('./startup/db')();
+require('./startup/config')();
+
+//check for config env varible settings for jwt
+if (!config.get('jwtPrivateKey')) {
+  console.log("FATAL_ERROR: jwtPrivateKey is not defined.")
+  process.exit(1);
+}
+
+// // connect to mongoDB using mongoose
+// mongoose.connect('mongodb://localhost/population')
+// .then(() => console.log('Connected to MongoDB....'))
+// .catch((error) => console.log('Could not connected to MongoDB....', error));
 
 app.use(bodyParser.raw());
 app.use(bodyParser.json());
