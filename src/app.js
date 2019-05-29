@@ -16,9 +16,7 @@ app.get('/', (req, res) => {
 });
 
 app.all('*', (req, res) => {
-  res.status(200).send('Oooooops wrong endpoint!'); 
+  res.status(200).send('Oooooops, wrong endpoint!'); 
 });
 
 module.exports = app;
-
- 

@@ -10,7 +10,6 @@ describe('/api/locations', () => {
     await User.remove({});
     await MainLocation.remove({});
     await SubLocation.remove({});
-    // app.close();
   });
 
   //User test
