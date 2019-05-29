@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll --verbose --coverage",
+    "test": "jest --verbose --detectOpenHandles --coverage",
     "build": "babel  src/ -d dist/",
     "start": "nodemon src/index.js --exec babel-node"
   },
