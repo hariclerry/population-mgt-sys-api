@@ -18,7 +18,7 @@ module.exports = {
   async fetchAllLocations(req, res) {
     try {
       const populationRecord = await MainLocation.find().sort('locationName');
-      res.send(populationRecord);
+      res.status(200).send({data: populationRecord, status: 'Success'});
     } catch (error) {
       res.status(500).send(error.message);
     }
@@ -52,7 +52,7 @@ module.exports = {
 
       const savedPopulation = await populationRecord.save();
 
-      res.status(201).send(savedPopulation);
+      res.status(201).send({data: savedPopulation, status: 'Success'});
     } catch (error) {
       res.status(500).send(error.message);
     }
@@ -93,7 +93,7 @@ module.exports = {
           .send({ message: `Location with ID ${locationId} was not found` });
       }
 
-      res.status(200).send(savedPopulation);
+      res.status(200).send({data: savedPopulation, status: 'Success'});
     } catch (error) {
       res.status(500).send(error.message);
     }
@@ -154,7 +154,7 @@ module.exports = {
         populationRecord.total =
           populationRecord.numberOfFemale + populationRecord.numberOfMale;
       }
-      res.send(populationRecord);
+      res.send({data: populationRecord, status: 'Success'});
     } catch (error) {
       res.status(500).send(error.message);
     }

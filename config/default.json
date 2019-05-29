@@ -1,4 +1,4 @@
 {
-  "jwtPrivateKey": "",
+  "jwtPrivateKey": "harrriet",
   "db": "mongodb://localhost/population"
 }

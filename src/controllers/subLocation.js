@@ -19,7 +19,7 @@ module.exports = {
   async fetchAllSubLocations(req, res) {
     try {
       const populationRecord = await SubLocation.find().sort('locationName');
-      res.send(populationRecord);
+      res.status(200).send({data: populationRecord, status: 'Success'});
     } catch (error) {
       res.status(500).send(error.message);
     }
@@ -58,7 +58,7 @@ module.exports = {
       location.subLocation.push(savedPopulation);
       location.save();
 
-      res.status(201).send(location);
+      res.status(201).send({data: savedPopulation, status: 'Success'});
     } catch (error) {
       res.status(500).send(error.message);
     }
@@ -99,7 +99,7 @@ module.exports = {
           .status(404)
           .send({ message: `Location with ID ${id} was not found` });
 
-      res.status(200).send(savedPopulation);
+      res.status(200).send({data: savedPopulation, status: 'Success'});
     } catch (error) {
       res.status(500).send(error.message);
     }
@@ -146,7 +146,7 @@ module.exports = {
           .status(404)
           .send({ message: `Location with ID ${id} was not found` });
 
-      res.send(populationRecord);
+      res.send({data: populationRecord, status: 'Success'});
     } catch (error) {
       res.status(500).send(error.message);
     }
