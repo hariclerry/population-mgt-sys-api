@@ -1,8 +1,15 @@
+/**
+ * @file contains integration test for location, sublocation and user
+ */
+
+// Third party imports
 const request = require('supertest');
+const mongoose = require('mongoose');
+
+// local imports
 const MainLocation = require('../models/mainLocation');
 const SubLocation = require('../models/subLocations');
 const { User } = require('../models/user');
-const mongoose = require('mongoose');
 const app = require('../app');
 
 describe('/api/locations', () => {
@@ -102,11 +109,11 @@ describe('/api/locations', () => {
         .set('x-auth-token', token);
 
       expect(res.status).toBe(200);
-      expect(res.body.length).toBe(5);
-      expect(res.body.some(g => g.locationName === 'Gulu')).toBeTruthy();
-      expect(res.body.some(g => g.numberOfFemale === 10)).toBeTruthy();
-      expect(res.body.some(g => g.numberOfMale === 20)).toBeTruthy();
-      expect(res.body.some(g => g.total === 30)).toBeTruthy();
+      expect(res.body.data.length).toBe(5);
+      expect(res.body.data.some(g => g.locationName === 'Gulu')).toBeTruthy();
+      expect(res.body.data.some(g => g.numberOfFemale === 10)).toBeTruthy();
+      expect(res.body.data.some(g => g.numberOfMale === 20)).toBeTruthy();
+      expect(res.body.data.some(g => g.total === 30)).toBeTruthy();
     });
   });
 
@@ -360,12 +367,11 @@ describe('/api/locations', () => {
         .get('/api/v1/location/:locationId/sub')
         .set('x-auth-token', token);
 
-      expect(res.status).toBe(200);
-      expect(res.body.length).toBe(4);
-      expect(res.body.some(g => g.locationName === 'Gulu')).toBeTruthy();
-      expect(res.body.some(g => g.numberOfFemale === 10)).toBeTruthy();
-      expect(res.body.some(g => g.numberOfMale === 20)).toBeTruthy();
-      expect(res.body.some(g => g.subTotal === 30)).toBeTruthy();
+        expect(res.body.data.length).toBe(4);
+        expect(res.body.data.some(g => g.locationName === 'Gulu')).toBeTruthy();
+        expect(res.body.data.some(g => g.numberOfFemale === 10)).toBeTruthy();
+        expect(res.body.data.some(g => g.numberOfMale === 20)).toBeTruthy();
+        expect(res.body.data.some(g => g.subTotal === 30)).toBeTruthy();
     });
   });
 

@@ -1,8 +1,14 @@
+/**
+ * @file contains all the routes for the implemented endpoints
+ */
+
+ // local imports
 const location = require('../controllers/mainLocation');
 const subLocation = require('../controllers/subLocation');
 const users = require('../controllers/users');
 const auth = require('../middleware/auth');
 
+// constants
 const {
   createLocation,
   updateLocation,
