@@ -1,8 +1,19 @@
+/**
+ * @file contains all endpoints for creating or registering a new user and user login
+ */
+
+//Third party imports
 const bcrypt = require('bcrypt');
+
+//local imports
 const { User } = require('../models/user');
 const { validateUser, validateLogin } = require('../utilis/validator');
 
 module.exports = {
+  /**
+   * @function createUser
+   * called when creating a new user
+   */
   async createUser(req, res) {
     try {
       const { name, email, password } = req.body;
@@ -27,6 +38,10 @@ module.exports = {
     }
   },
 
+  /**
+   * @function loginUser
+   * called when logging in a user
+   */
   async loginUser(req, res) {
     try {
       const { email, password } = req.body;
@@ -34,14 +49,15 @@ module.exports = {
       if (error) return res.status(400).send(error.details[0].message);
 
       let user = await User.findOne({ email });
-      if (!user) return res.status(400).send({message: 'Invalid email or password.'});
+      if (!user)
+        return res.status(400).send({ message: 'Invalid email or password.' });
 
       const validPassword = await bcrypt.compare(password, user.password);
       if (!validPassword)
-        return res.status(400).send({message: 'Invalid password.'});
+        return res.status(400).send({ message: 'Invalid password.' });
 
       const token = user.generateAuthToken();
-      res.status(200).send({token, message: "Login successful."});
+      res.status(200).send({ token, message: 'Login successful.' });
     } catch (error) {
       res.status(500).send({ Error: error.message });
     }

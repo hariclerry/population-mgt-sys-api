@@ -1,5 +1,11 @@
+/**
+ * @file responsible for server startup and running
+ */
+
+// local imports
 const app = require('./app');
 
-const port = process.env.PORT || 3000
+// constants
+const port = process.env.PORT || 3000;
 
 app.listen(port, () => console.log(`listening on port ${port}...`));

@@ -1,8 +1,15 @@
+/**
+ * @file contains integration test for location, sublocation and user
+ */
+
+// Third party imports
 const request = require('supertest');
+const mongoose = require('mongoose');
+
+// local imports
 const MainLocation = require('../models/mainLocation');
 const SubLocation = require('../models/subLocations');
 const { User } = require('../models/user');
-const mongoose = require('mongoose');
 const app = require('../app');
 
 describe('/api/locations', () => {

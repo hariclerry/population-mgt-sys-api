@@ -1,33 +1,41 @@
-const mongoose = require('mongoose');
-const subLocationSchema   = require('./subLocations').schema
+/**
+ * @file creates the sub location schema
+ */
 
+// Third party imports
+const mongoose = require('mongoose');
+
+// local imports
+const subLocationSchema = require('./subLocations').schema;
+
+//constants
 const Schema = mongoose.Schema;
 
 // create schema
 const mainLocationSchema = Schema({
   locationName: {
     type: String,
-    required: true,
+    required: true
   },
   numberOfFemale: {
     type: Number,
-    required: true,
+    required: true
   },
   numberOfMale: {
     type: Number,
-    required: true,
+    required: true
   },
   total: {
     type: Number,
-    required: true,
+    required: true
   },
   subLocation: {
     type: [subLocationSchema]
-  },  
-  created: { 
+  },
+  created: {
     type: Date,
     default: Date.now
-}
+  }
 });
 
-module.exports = mongoose.model('MainLocation', mainLocationSchema)
+module.exports = mongoose.model('MainLocation', mainLocationSchema);

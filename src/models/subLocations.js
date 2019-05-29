@@ -1,6 +1,11 @@
-const mongoose = require('mongoose');
-// const { PopulationRecord } = require('../models/population');
+/**
+ * @file creates the main location schema
+ */
 
+// Third party imports
+const mongoose = require('mongoose');
+
+// constants
 const Schema = mongoose.Schema;
 
 // create schema
@@ -33,8 +38,6 @@ const subLocationSchema = Schema({
 
 //create model using schema
 const SubLocation = mongoose.model('SubLocation', subLocationSchema)
-
-// module.exports = mongoose.model('SubLocation', subLocationSchema)
 
 module.exports = subLocationSchema;
 module.exports = SubLocation;

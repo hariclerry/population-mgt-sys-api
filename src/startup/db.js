@@ -1,3 +1,8 @@
+/**
+ * @file contains database configuration settings
+ */
+
+// third party imports
 const mongoose = require('mongoose');
 const config = require('config');
 
