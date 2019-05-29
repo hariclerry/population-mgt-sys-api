@@ -2,43 +2,6 @@ const mongoose = require('mongoose');
 const MainLocation = require('../models/mainLocation');
 const { validate } = require('../utilis/validator');
 
-/**
- * @swagger
- * /Creat Location:
- *   post:
- *     tags:
- *       - Locations
- *     name: Create
- *     summary: Creates location
- *     consumes:
- *       - application/json
- *     parameters:
- *       - locationName: body
- *         in: body
- *         schema:
- *           $ref: '#/definitions/MainLocation'
- *           type: object
- *           properties:
- *              locationName:
- *                 type: string
- *              numberOfFemale:
- *                 type: integer
- *              numberOfMale:
- *                 type: integer
- *              subLocation:
- *                 type: array
- *              total:
- *                type: integer
- *           required:
- *             - locationName
- *             - numberOfFemale
- *             - numberOfMale
- *             - total
- *     responses:
- *       201:
- *         description: Location created successfully
- */
-
 module.exports = {
   async fetchAllLocations(req, res) {
     try {

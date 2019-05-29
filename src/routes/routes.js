@@ -1,5 +1,7 @@
 const location = require('../controllers/mainLocation');
 const subLocation = require('../controllers/subLocation');
+const users = require('../controllers/users');
+const auth = require('../middleware/auth');
 
 const {
   createLocation,
@@ -17,26 +19,39 @@ const {
   deleteSubLocation
 } = subLocation;
 
+const {
+  createUser,
+  loginUser
+} = users;
+
 module.exports = app => {
   //mainLocation routes
   app
     .route('/api/v1/location')
-    .post(createLocation)
-    .get(fetchAllLocations);
+    .post(auth, createLocation)
+    .get(auth, fetchAllLocations);
   app
     .route('/api/v1/location/:locationId')
-    .put(updateLocation)
-    .delete(deleteLocation)
-    .get(fetchLocation);
+    .put(auth, updateLocation)
+    .delete(auth, deleteLocation)
+    .get(auth, fetchLocation);
 
   //subLocation routes
   app
     .route('/api/v1/location/:locationId/sub')
-    .post(createSubLocation)
-    .get(fetchAllSubLocations);
+    .post(auth, createSubLocation)
+    .get(auth, fetchAllSubLocations);
   app
     .route('/api/v1/location/:locationId/sub/:id')
-    .put(updateSubLocation)
-    .delete(deleteSubLocation)
-    .get(fetchSubLocation);
+    .put(auth, updateSubLocation)
+    .delete(auth, deleteSubLocation)
+    .get(auth, fetchSubLocation);
+
+   //user routes
+   app
+   .route('/api/v1/user')
+   .post(createUser)
+   app
+   .route('/api/v1/user/login')
+   .post(loginUser)
 };
