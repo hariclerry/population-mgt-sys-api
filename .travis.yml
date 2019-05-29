@@ -2,5 +2,7 @@ language: node_js
 node_js:
   - 10.15.3
 services: mongodb
-script: npm test -- --coverage
+script: npm test --coverage
 after_success: "npm run --coverage"
+after_script:
+  - COVERALLS_REPO_TOKEN=$coveralls_repo_token npm run coveralls
