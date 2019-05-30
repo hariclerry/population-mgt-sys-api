@@ -6,7 +6,10 @@
   "scripts": {
     "test": "jest --verbose --detectOpenHandles --forceExit --coverage",
     "build": "babel  src/ -d dist/",
-    "start": "nodemon src/index.js --exec babel-node"
+    "start": "node src/index.js"
+  },
+  "engines": {
+    "node": "v10.15.3"
   },
   "repository": {
     "type": "git",
