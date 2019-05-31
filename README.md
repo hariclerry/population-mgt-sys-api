@@ -67,13 +67,9 @@ Input `http:127.0.0.1:3000/` followed by any of the following endpoints to demo 
 |GET/api/v1/location/:locationId/sub/:id|Gets a sub location|
 
 ### Checkout the live app on heroku
-TODO
+Heroku link: https://population-mgt-sys.herokuapp.com/
 
-### API
-https://weconnect-harriet5.herokuapp.com/apidocs/
+### API Documentation with POSTMAN
+Test the API with Postman here https://documenter.getpostman.com/view/7685370/S1TVXHpW
 
 The API is written in Node.Js using the Express framework and mongoDB as the database dialect.
-
-Credits
-
-[Harriet]: https://github.com/hariclerry
